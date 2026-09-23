@@ -18,5 +18,4 @@ Documentation = "https://github.com/ciru-ai/ComfyUI-CiruImageAccelerator#readme"
 
 [tool.comfy]
 DisplayName = "Ciru Image Accelerator"
-# PublisherId is filled with the owner's confirmed Comfy Registry publisher ID
-# immediately before registry publication. Git/ZIP installs do not require it.
+PublisherId = "ciru"

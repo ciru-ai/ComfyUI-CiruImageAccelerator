@@ -6,7 +6,7 @@ The node contains no model weights. It uses the Qwen Image 2.1 model, text encod
 
 ## Install
 
-This repository is a normal ComfyUI custom node. Once the source repository is published:
+This repository is a normal ComfyUI custom node:
 
 ```bash
 cd /path/to/ComfyUI/custom_nodes
@@ -14,7 +14,7 @@ git clone https://github.com/ciru-ai/ComfyUI-CiruImageAccelerator.git
 # Restart ComfyUI, then reload the browser.
 ```
 
-After the Comfy Registry entry is published, search for **Ciru Image Accelerator** in ComfyUI-Manager or run `comfy node install ciru-image-accelerator` with the Comfy CLI. The Registry listing is still pending publisher setup; Git clone and the source ZIP are the available installation paths for this candidate.
+Search for **Ciru Image Accelerator** in ComfyUI-Manager or run `comfy node install ciru-image-accelerator` with the Comfy CLI. Git clone and the source ZIP also work.
 
 For a ZIP installation, extract the release so that `ComfyUI/custom_nodes/ComfyUI-CiruImageAccelerator/__init__.py` exists. No `pip install` step or replacement Torch build is required. On gfx1151, the optional 2048 attention optimization requires a working Triton installation in the same Python environment as ComfyUI; `auto` falls back to ComfyUI's native attention if Triton is missing and logs that choice. Install a Triton build compatible with your existing ROCm/PyTorch stack if you want that optimization. The package never installs dependencies at runtime.
 

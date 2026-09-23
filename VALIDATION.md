@@ -1,4 +1,4 @@
-# Release validation: local source candidate
+# Release validation: v0.1.0
 
 Validated on Radeon 8060S / gfx1151, ComfyUI `c194dd00cd42aa18d9dbf27d977bf6b85d9ea565`, Torch `2.13.0+rocm10.0.0`, HIP `7.15.26333`, comfy-kitchen `0.2.35`, official Qwen Image 2.1 INT8 ConvRot denoiser and encoder, BF16 VAE. Euler/simple, CFG 1, batch one, 30 sampler steps, 12 full denoiser evaluations and 18 predicted evaluations. Timings below include prompt encoding, denoising and VAE decoding; they exclude loading and prompt rewriting.
 
