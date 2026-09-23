@@ -25,7 +25,7 @@ class CiruTurboPrediction:
     FUNCTION = "apply"
     CATEGORY = "Ciru/Image Acceleration"
     DESCRIPTION = ("Qwen Image 2.1 only. Twelve full denoiser evaluations by default. "
-                   "Auto uses the measured gfx1151 attention path at 1024 or 2048 square.")
+                   "Auto keeps native attention at 1024 and uses the gfx1151 path at 2048 square.")
 
     def apply(self, model, enabled=True, full_evaluations=DEFAULT_FULL_EVALUATIONS,
               attention="auto"):
@@ -91,7 +91,8 @@ class CiruTurboPrediction:
                     logging.info("Ciru Image Accelerator: native attention on %s", device)
                 else:
                     try:
-                        options["optimized_attention_override"] = make_attention_override(active_pass)
+                        options["optimized_attention_override"] = make_attention_override(
+                            active_pass, allow_1024=attention == "strix")
                     except RuntimeError:
                         if attention == "strix":
                             raise

@@ -62,7 +62,7 @@ def main():
         print("Model files can also be supplied through ComfyUI extra model paths.")
 
     if torch.version.hip and architecture == "gfx1151" and has_triton:
-        print("Strix attention prerequisites: present; run an example workflow to verify kernel compilation")
+        print("Strix attention prerequisites: present; run the 2048 example to verify kernel compilation")
     else:
         print("Strix attention prerequisites: incomplete; prediction can still use native attention")
     return 0

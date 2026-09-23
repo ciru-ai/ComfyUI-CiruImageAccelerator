@@ -9,6 +9,7 @@ import contextvars
 from pathlib import Path
 import sys
 import unittest
+from unittest.mock import patch
 
 import comfy.patcher_extension
 import torch
@@ -113,6 +114,19 @@ class LifecycleTests(unittest.TestCase):
             self.assertEqual(state.attention_counts, {"native": 1})
         finally:
             active.reset(token)
+
+    def test_auto_keeps_1024_native_but_2048_uses_strix(self):
+        from ciru_image_accelerator_test import attention_backend
+
+        def inputs(tokens):
+            q = torch.empty((1, tokens, 4096), dtype=torch.bfloat16, device="meta")
+            return q, q, q, 32, None, {}
+
+        with patch.object(attention_backend, "device_is_gfx1151", return_value=True):
+            self.assertFalse(attention_backend.qualified_inputs(*inputs(4096)))
+            self.assertTrue(attention_backend.qualified_inputs(*inputs(4096), allow_1024=True))
+            self.assertTrue(attention_backend.qualified_inputs(*inputs(16384)))
+            self.assertFalse(attention_backend.qualified_inputs(*inputs(8192), allow_1024=True))
 
 
 if __name__ == "__main__":

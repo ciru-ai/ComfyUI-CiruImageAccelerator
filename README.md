@@ -1,6 +1,6 @@
 # Ciru Image Accelerator for ComfyUI
 
-A single `MODEL` → `MODEL` node for Qwen Image 2.1 text-to-image. It combines adjustable denoiser prediction with a shape-guarded attention path for AMD Strix Halo (gfx1151). The default is **12 full evaluations within 30 sampler steps**. The other 18 steps still run, using predicted denoiser outputs. Increasing the full-evaluation count moves the result toward the full model at a speed cost.
+A single `MODEL` → `MODEL` node for Qwen Image 2.1 text-to-image. It combines adjustable denoiser prediction with a shape-guarded attention path for AMD Strix Halo (gfx1151). The default is **12 full evaluations within 30 sampler steps**, our preferred balance of speed and image quality. The other 18 steps still run, using predicted denoiser outputs.
 
 The node contains no model weights. It uses the Qwen Image 2.1 model, text encoder and VAE already installed in ComfyUI.
 
@@ -16,7 +16,7 @@ git clone https://github.com/ciru-ai/ComfyUI-CiruImageAccelerator.git
 
 After the Comfy Registry entry is published, search for **Ciru Image Accelerator** in ComfyUI-Manager or run `comfy node install ciru-image-accelerator` with the Comfy CLI. The Registry listing is still pending publisher setup; Git clone and the source ZIP are the available installation paths for this candidate.
 
-For a ZIP installation, extract the release so that `ComfyUI/custom_nodes/ComfyUI-CiruImageAccelerator/__init__.py` exists. No `pip install` step or replacement Torch build is required. On gfx1151, the attention optimization requires a working Triton installation in the same Python environment as ComfyUI; `auto` falls back to ComfyUI's native attention if Triton is missing and logs that choice. Install a Triton build compatible with your existing ROCm/PyTorch stack if you want that optimization. The package never installs dependencies at runtime.
+For a ZIP installation, extract the release so that `ComfyUI/custom_nodes/ComfyUI-CiruImageAccelerator/__init__.py` exists. No `pip install` step or replacement Torch build is required. On gfx1151, the optional 2048 attention optimization requires a working Triton installation in the same Python environment as ComfyUI; `auto` falls back to ComfyUI's native attention if Triton is missing and logs that choice. Install a Triton build compatible with your existing ROCm/PyTorch stack if you want that optimization. The package never installs dependencies at runtime.
 
 Check the installation with the Python interpreter **and environment used to launch ComfyUI**:
 
@@ -24,7 +24,7 @@ Check the installation with the Python interpreter **and environment used to lau
 /path/to/comfy-python /path/to/ComfyUI/custom_nodes/ComfyUI-CiruImageAccelerator/tools/doctor.py
 ```
 
-The check reports the detected GPU, PyTorch/HIP/Triton versions and expected model paths without loading the weights. If PyTorch cannot import, run it through the same ROCm library-path setup as your ComfyUI launcher. A successful check confirms prerequisites; run one included workflow to verify the attention kernel compiles on your stack.
+The check reports the detected GPU, PyTorch/HIP/Triton versions and expected model paths without loading the weights. If PyTorch cannot import, run it through the same ROCm library-path setup as your ComfyUI launcher. A successful check confirms prerequisites; run the included 2048 workflow to verify the attention kernel compiles on your stack.
 
 Use a recent ComfyUI that includes the `TextEncodeQwenImage21` and `QwenImage21Cache` nodes. Download the INT8 ConvRot denoiser and encoder and BF16 VAE from [Comfy-Org/Qwen-Image-2.1](https://huggingface.co/Comfy-Org/Qwen-Image-2.1). Place them in the standard `models/diffusion_models`, `models/text_encoders` and `models/vae` folders shown on that page. These model files are not redistributed here.
 
@@ -43,25 +43,27 @@ In ComfyUI, open **Templates → Extensions → ComfyUI-CiruImageAccelerator** a
 The node has three controls:
 
 - `enabled`: turn both optimizations on or off.
-- `full_evaluations`: 12 by default. Seven is faster with a larger quality tradeoff; 8 is an intermediate option. Set it equal to sampler steps for no prediction. The minimum is 6. All sampler steps still execute.
-- `attention`: `auto` uses the measured dense BF16 kernel only for qualified shapes on ROCm gfx1151. `native` leaves ComfyUI's attention unchanged. `strix` requires the gfx1151/Triton path and reports an error if it is unavailable.
+- `full_evaluations`: 12 is the default and our preferred speed–quality balance. Lower values finish sooner but rely more on prediction, which can lose fine detail or change the image. Higher values use the full denoiser more often and generally preserve more fidelity, but take longer. Set it equal to the sampler step count to remove prediction entirely. The minimum is 6; every sampler step still executes.
+- `attention`: `auto` keeps ComfyUI's native attention for 1024-square and smaller attention shapes. It selects the measured packed BF16 kernel only for the qualified 16,384-token shape used by 2048-square images on ROCm gfx1151. `native` always leaves ComfyUI's attention unchanged. `strix` explicitly enables the custom kernel at qualified 1024 or 2048 sizes and reports an error if the gfx1151/Triton path is unavailable.
 
-At 1024 square the Strix kernel keeps the original interleaved head layout. At 2048 square it packs each head contiguously before the same kernel. Other shapes, masks, dtypes, batches and hardware use the existing attention path. An existing attention override is preserved by `auto`; select `native` when combining this node with another attention extension.
+The 1024 Strix kernel uses an interleaved head layout, but it can be slower than ComfyUI's native attention at smaller sizes. Use `strix` there only when deliberately comparing the two. At 2048 square, the custom path packs each head contiguously. Other shapes, masks, dtypes, batches and hardware use the existing attention path. An existing attention override is preserved by `auto`; select `native` when combining this node with another attention extension.
 
 ## Example output and speed
 
-The same rewritten elephant prompt, seed 99, CFG 1 and 30 Euler/simple steps on a Radeon 8060S. The comparison changes the number of full denoiser evaluations; it does not change the model weights.
+The same rewritten elephant prompt, seed 99, CFG 1 and 30 Euler/simple steps on a Radeon 8060S. This earlier 1024 comparison used the **forced Strix attention path** for both images; its timings are not the new 1024 `auto` default. The comparison changes the number of full denoiser evaluations, not the model weights.
 
-| Full 30/30 | Default 12/30 |
+| Full 30/30, forced Strix | 12/30, forced Strix |
 |---|---|
 | ![Full elephant at 1024](assets/elephant-1024-full.png) | ![Twelve-full elephant at 1024](assets/elephant-1024-default12.png) |
 | 74.06 s | 34.62 s |
+
+With the current 1024 `auto` default, a matched 12/30 Gothic portrait took **34.74 s** using native attention. The earlier forced Strix run took **33.43 s** on that prompt. The custom path can also make smaller workloads slower, so `auto` leaves them on ComfyUI's native implementation; use `strix` only to compare on your own stack.
 
 At 2048 square, the packed-attention full reference took 420.05 s and the packaged 12/30 path took 173.19 s. The 2048 packaged image was byte-identical to the saved 12/30 reference. These are single runs with model loading and prompt rewriting excluded. The full reference and 1024 images were produced in earlier matched runs; see `VALIDATION.md` for artifact hashes and exact scope.
 
 ## Current validation and limits
 
-The package was exercised with Qwen Image 2.1 INT8 ConvRot denoiser and encoder, BF16 VAE, Radeon 8060S/gfx1151, ComfyUI `c194dd00cd42aa18d9dbf27d977bf6b85d9ea565`, Torch `2.13.0+rocm10.0.0`, HIP `7.15.26333`, Euler/simple, CFG 1, batch one. The combined package produced byte-identical 1024 and 2048 PNGs to previous 12-evaluation research results. See `VALIDATION.md` for the clean-install and GUI workflow tests.
+The package was exercised with Qwen Image 2.1 INT8 ConvRot denoiser and encoder, BF16 VAE, Radeon 8060S/gfx1151, ComfyUI `c194dd00cd42aa18d9dbf27d977bf6b85d9ea565`, Torch `2.13.0+rocm10.0.0`, HIP `7.15.26333`, Euler/simple, CFG 1, batch one. The forced Strix path produced byte-identical 1024 and 2048 PNGs to previous 12-evaluation research results. See `VALIDATION.md` for the clean-install and GUI workflow tests.
 
 Image editing/reference conditioning is explicitly rejected. The predictor rejects batch sizes above one and unexpected extra model calls. Other samplers, CFG settings, LoRAs, CUDA and other AMD GPUs are not yet qualified for image quality or speed; the attention path stays native outside its gfx1151 shape guard. Prediction changes the generated image, especially at the most aggressive settings. Seven and twelve full evaluations matched the earlier research runner PNGs at a 25-step fixture.
 

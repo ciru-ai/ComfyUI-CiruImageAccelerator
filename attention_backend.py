@@ -5,7 +5,8 @@ import logging
 import torch
 
 
-QUALIFIED_QUERY_TOKENS = (4096, 16384)
+AUTO_QUERY_TOKENS = (16384,)
+FORCED_QUERY_TOKENS = (4096, 16384)
 QUALIFIED_HEADS = 32
 QUALIFIED_HEAD_DIM = 128
 
@@ -20,14 +21,15 @@ def device_is_gfx1151(device) -> bool:
     return str(getattr(properties, "gcnArchName", "")).split(":", 1)[0] == "gfx1151"
 
 
-def qualified_inputs(q, k, v, heads, mask, kwargs) -> bool:
+def qualified_inputs(q, k, v, heads, mask, kwargs, *, allow_1024=False) -> bool:
     if mask is not None or kwargs.get("skip_reshape", False):
         return False
     if q.ndim != 3 or k.ndim != 3 or v.ndim != 3:
         return False
     if q.shape[0] != 1 or k.shape[0] != 1 or v.shape[0] != 1:
         return False
-    if q.shape[1] not in QUALIFIED_QUERY_TOKENS or k.shape[1] != q.shape[1] or v.shape[1] != q.shape[1]:
+    allowed_tokens = FORCED_QUERY_TOKENS if allow_1024 else AUTO_QUERY_TOKENS
+    if q.shape[1] not in allowed_tokens or k.shape[1] != q.shape[1] or v.shape[1] != q.shape[1]:
         return False
     if heads != QUALIFIED_HEADS or q.shape[2] != heads * QUALIFIED_HEAD_DIM:
         return False
@@ -38,7 +40,7 @@ def qualified_inputs(q, k, v, heads, mask, kwargs) -> bool:
     return q.device == k.device == v.device and device_is_gfx1151(q.device)
 
 
-def make_attention_override(active_pass):
+def make_attention_override(active_pass, *, allow_1024=False):
     # Import Triton only when this backend is selected. Portable prediction can
     # load on systems without Triton or AMD hardware.
     try:
@@ -49,7 +51,7 @@ def make_attention_override(active_pass):
         ) from exc
 
     def override(original, q, k, v, heads, mask=None, **kwargs):
-        if not qualified_inputs(q, k, v, heads, mask, kwargs):
+        if not qualified_inputs(q, k, v, heads, mask, kwargs, allow_1024=allow_1024):
             state = active_pass.get()
             if state is not None:
                 state.attention_counts["native"] = state.attention_counts.get("native", 0) + 1
@@ -71,5 +73,6 @@ def make_attention_override(active_pass):
             return output
         return output.transpose(1, 2).reshape(1, length, heads * QUALIFIED_HEAD_DIM)
 
-    logging.info("Ciru Image Accelerator: gfx1151 dense attention ready (1024 interleaved, 2048 packed)")
+    shapes = "1024 interleaved and 2048 packed" if allow_1024 else "2048 packed; 1024 native"
+    logging.info("Ciru Image Accelerator: gfx1151 dense attention ready (%s)", shapes)
     return override
