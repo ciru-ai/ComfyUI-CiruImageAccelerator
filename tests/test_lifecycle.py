@@ -127,6 +127,10 @@ class LifecycleTests(unittest.TestCase):
             self.assertTrue(attention_backend.qualified_inputs(*inputs(4096), allow_1024=True))
             self.assertTrue(attention_backend.qualified_inputs(*inputs(16384)))
             self.assertFalse(attention_backend.qualified_inputs(*inputs(8192), allow_1024=True))
+            q = torch.empty((1, 16384, 4096), dtype=torch.bfloat16, device="meta")
+            kv = torch.empty((1, 17297, 4096), dtype=torch.bfloat16, device="meta")
+            self.assertTrue(attention_backend.qualified_inputs(q, kv, kv, 32, None, {}))
+            self.assertFalse(attention_backend.qualified_inputs(q, kv, q, 32, None, {}))
 
 
 if __name__ == "__main__":

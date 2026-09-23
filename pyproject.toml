@@ -1,6 +1,6 @@
 [project]
 name = "ciru-image-accelerator"
-version = "0.1.0"
+version = "0.1.1"
 description = "Qwen Image 2.1 prediction and shape-guarded Strix Halo attention for ComfyUI"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }

@@ -29,7 +29,9 @@ def qualified_inputs(q, k, v, heads, mask, kwargs, *, allow_1024=False) -> bool:
     if q.shape[0] != 1 or k.shape[0] != 1 or v.shape[0] != 1:
         return False
     allowed_tokens = FORCED_QUERY_TOKENS if allow_1024 else AUTO_QUERY_TOKENS
-    if q.shape[1] not in allowed_tokens or k.shape[1] != q.shape[1] or v.shape[1] != q.shape[1]:
+    # Qwen Image 2.1 appends prompt tokens to the image keys/values. The
+    # image queries remain 4096 or 16384 tokens, even for long prompts.
+    if q.shape[1] not in allowed_tokens or k.shape[1] < q.shape[1] or v.shape[1] != k.shape[1]:
         return False
     if heads != QUALIFIED_HEADS or q.shape[2] != heads * QUALIFIED_HEAD_DIM:
         return False

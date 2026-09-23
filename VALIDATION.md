@@ -1,4 +1,18 @@
-# Release validation: v0.1.0
+# Release validation
+
+## v0.1.1: long-prompt Strix attention
+
+Qwen Image 2.1's image queries can attend to additional text keys and values. Three prompt-rewritten 2048-square scenes exercised this case on Radeon 8060S / gfx1151 with the official INT8 ConvRot denoiser and encoder, BF16 VAE, Euler/simple, CFG 1, and 30 sampler steps. The fixed node recorded 384 packed attention calls for 12 full evaluations and 960 for 30 full evaluations; each run also recorded 32 native calls for the separate masked text attention. Timings include encoding, denoising, and VAE decoding, but exclude model loading and prompt rewriting.
+
+| Scene | 12 full / 30 steps | 30 full / 30 steps |
+|---|---:|---:|
+| Moon sorceress | 186.1 s | 455.9 s |
+| Mech pilot | 183.1 s | 452.7 s |
+| Ice astronaut | 181.0 s | 440.2 s |
+
+The images, sidecars, and run log are saved in the research workspace at `phase42/rewritten-multires-comparison/`. The nine package unit tests passed in Sozo's ComfyUI environment. The run script restored the previously active `qwen-main.service` after generation.
+
+## v0.1.0
 
 Validated on Radeon 8060S / gfx1151, ComfyUI `c194dd00cd42aa18d9dbf27d977bf6b85d9ea565`, Torch `2.13.0+rocm10.0.0`, HIP `7.15.26333`, comfy-kitchen `0.2.35`, official Qwen Image 2.1 INT8 ConvRot denoiser and encoder, BF16 VAE. Euler/simple, CFG 1, batch one, 30 sampler steps, 12 full denoiser evaluations and 18 predicted evaluations. Timings below include prompt encoding, denoising and VAE decoding; they exclude loading and prompt rewriting.
 
