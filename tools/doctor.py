@@ -1,4 +1,4 @@
-"""Read-only installation check for Ciru Image Accelerator.
+"""Read-only installation check for Ciru AMD Halo Qwen 2.1 Turbo.
 
 Run with the Python interpreter used to start ComfyUI:
     python custom_nodes/ComfyUI-CiruImageAccelerator/tools/doctor.py

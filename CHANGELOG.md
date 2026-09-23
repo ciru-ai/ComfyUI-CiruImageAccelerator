@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3
+
+- Rename the Registry listing and ComfyUI node label to Ciru AMD Halo Qwen 2.1 Turbo. The install ID and workflow node type stay the same.
+
 ## 0.1.2
 
 - Explain the node connection and recommended starting settings directly in the Registry description and README introduction.

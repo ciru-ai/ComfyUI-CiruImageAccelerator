@@ -1,6 +1,6 @@
-# Ciru Image Accelerator for ComfyUI
+# Ciru AMD Halo Qwen 2.1 Turbo for ComfyUI
 
-A single `MODEL` → `MODEL` node for Qwen Image 2.1 text-to-image. Connect **UNETLoader → QwenImage21Cache → Ciru Image Accelerator → KSampler**, then start with **30 Euler/simple steps, CFG 1, 12 full evaluations, and auto attention**. Prediction can run on other hardware. The packed 2048 attention path is enabled only on AMD Strix Halo (gfx1151); the package's GPU check routes other hardware through its existing attention implementation. The other 18 sampler steps still run, using predicted denoiser outputs.
+A single `MODEL` → `MODEL` node for Qwen Image 2.1 text-to-image. Connect **UNETLoader → QwenImage21Cache → Ciru AMD Halo Qwen 2.1 Turbo → KSampler**, then start with **30 Euler/simple steps, CFG 1, 12 full evaluations, and auto attention**. Prediction can run on other hardware. The packed 2048 attention path is enabled only on AMD Strix Halo (gfx1151); the package's GPU check routes other hardware through its existing attention implementation. The other 18 sampler steps still run, using predicted denoiser outputs.
 
 The node contains no model weights. It uses the Qwen Image 2.1 model, text encoder and VAE already installed in ComfyUI.
 
@@ -14,7 +14,7 @@ git clone https://github.com/ciru-ai/ComfyUI-CiruImageAccelerator.git
 # Restart ComfyUI, then reload the browser.
 ```
 
-Search for **Ciru Image Accelerator** in ComfyUI-Manager or run `comfy node install ciru-image-accelerator` with the Comfy CLI. Git clone and the source ZIP also work.
+Search for **Ciru AMD Halo Qwen 2.1 Turbo** in ComfyUI-Manager or run `comfy node install ciru-image-accelerator` with the Comfy CLI. Git clone and the source ZIP also work.
 
 For a ZIP installation, extract the release so that `ComfyUI/custom_nodes/ComfyUI-CiruImageAccelerator/__init__.py` exists. No `pip install` step or replacement Torch build is required. On gfx1151, the optional 2048 attention optimization requires a working Triton installation in the same Python environment as ComfyUI; `auto` falls back to ComfyUI's native attention if Triton is missing and logs that choice. Install a Triton build compatible with your existing ROCm/PyTorch stack if you want that optimization. The package never installs dependencies at runtime.
 
@@ -30,10 +30,10 @@ Use a recent ComfyUI that includes the `TextEncodeQwenImage21` and `QwenImage21C
 
 ## Use
 
-Add **Ciru Image Accelerator** after the Qwen Image 2.1 model loader and cache node, and before `KSampler`:
+Add **Ciru AMD Halo Qwen 2.1 Turbo** after the Qwen Image 2.1 model loader and cache node, and before `KSampler`:
 
 ```text
-UNETLoader → QwenImage21Cache → Ciru Image Accelerator → KSampler
+UNETLoader → QwenImage21Cache → Ciru AMD Halo Qwen 2.1 Turbo → KSampler
 ```
 
 Use `TextEncodeQwenImage21` for conditioning. Start with Euler, simple scheduler, CFG 1, 30 steps, batch one. Prediction requires at least 20 sampler steps. The included workflows demonstrate 1024 and 2048 square output. Prompt enhancement is optional and stays separate from this node.

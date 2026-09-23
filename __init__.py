@@ -80,7 +80,7 @@ class CiruTurboPrediction:
             if "optimized_attention_override" in options:
                 if attention == "strix":
                     raise ValueError("Another custom attention override is already installed on this model")
-                logging.info("Ciru Image Accelerator: preserving an existing attention override")
+                logging.info("Ciru AMD Halo Qwen 2.1 Turbo: preserving an existing attention override")
             else:
                 from .attention_backend import device_is_gfx1151, make_attention_override
 
@@ -88,7 +88,7 @@ class CiruTurboPrediction:
                 if not isinstance(device, torch.device) or not device_is_gfx1151(device):
                     if attention == "strix":
                         raise RuntimeError("Strix attention requires a ROCm gfx1151 GPU")
-                    logging.info("Ciru Image Accelerator: native attention on %s", device)
+                    logging.info("Ciru AMD Halo Qwen 2.1 Turbo: native attention on %s", device)
                 else:
                     try:
                         options["optimized_attention_override"] = make_attention_override(
@@ -96,9 +96,9 @@ class CiruTurboPrediction:
                     except RuntimeError:
                         if attention == "strix":
                             raise
-                        logging.warning("Ciru Image Accelerator: Triton unavailable; using native attention")
+                        logging.warning("Ciru AMD Halo Qwen 2.1 Turbo: Triton unavailable; using native attention")
         return (patched,)
 
 
 NODE_CLASS_MAPPINGS = {"CiruTurboPrediction": CiruTurboPrediction}
-NODE_DISPLAY_NAME_MAPPINGS = {"CiruTurboPrediction": "Ciru Image Accelerator"}
+NODE_DISPLAY_NAME_MAPPINGS = {"CiruTurboPrediction": "Ciru AMD Halo Qwen 2.1 Turbo"}

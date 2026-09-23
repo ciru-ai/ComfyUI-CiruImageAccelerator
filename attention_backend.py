@@ -76,5 +76,5 @@ def make_attention_override(active_pass, *, allow_1024=False):
         return output.transpose(1, 2).reshape(1, length, heads * QUALIFIED_HEAD_DIM)
 
     shapes = "1024 interleaved and 2048 packed" if allow_1024 else "2048 packed; 1024 native"
-    logging.info("Ciru Image Accelerator: gfx1151 dense attention ready (%s)", shapes)
+    logging.info("Ciru AMD Halo Qwen 2.1 Turbo: gfx1151 dense attention ready (%s)", shapes)
     return override
