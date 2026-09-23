@@ -1,0 +1,22 @@
+[project]
+name = "ciru-image-accelerator"
+version = "0.1.0"
+description = "Qwen Image 2.1 prediction and shape-guarded Strix Halo attention for ComfyUI"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+dependencies = []
+classifiers = [
+  "Operating System :: POSIX :: Linux",
+  "Environment :: GPU :: AMD ROCm",
+  "Programming Language :: Python :: 3",
+]
+
+[project.urls]
+Repository = "https://github.com/ciru-ai/ComfyUI-CiruImageAccelerator"
+Documentation = "https://github.com/ciru-ai/ComfyUI-CiruImageAccelerator#readme"
+"Bug Tracker" = "https://github.com/ciru-ai/ComfyUI-CiruImageAccelerator/issues"
+
+[tool.comfy]
+DisplayName = "Ciru Image Accelerator"
+# PublisherId is filled with the owner's confirmed Comfy Registry publisher ID
+# immediately before registry publication. Git/ZIP installs do not require it.

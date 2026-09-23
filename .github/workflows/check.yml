@@ -1,0 +1,27 @@
+name: Source checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check source and workflows
+        run: |
+          python3 -m compileall -q __init__.py core.py schedule.py attention_backend.py attention_dense.py tools
+          python3 -m unittest discover -s tests -p test_schedule.py -q
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          import tomllib
+
+          metadata = tomllib.loads(Path("pyproject.toml").read_text())
+          assert metadata["project"]["version"]
+          assert metadata["tool"]["comfy"]["DisplayName"]
+          for folder in ("workflows", "api_examples"):
+              for path in Path(folder).glob("*.json"):
+                  json.loads(path.read_text())
+          PY
