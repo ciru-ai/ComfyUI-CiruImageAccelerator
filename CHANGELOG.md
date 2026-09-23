@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2
+
+- Explain the node connection and recommended starting settings directly in the Registry description and README introduction.
+
 ## 0.1.1
 
 - Keep the packed Strix attention path active for long Qwen Image 2.1 prompts whose image queries attend to additional text keys and values.

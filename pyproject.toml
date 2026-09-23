@@ -1,7 +1,7 @@
 [project]
 name = "ciru-image-accelerator"
-version = "0.1.1"
-description = "Qwen Image 2.1 prediction and shape-guarded Strix Halo attention for ComfyUI"
+version = "0.1.2"
+description = "Qwen Image 2.1: connect QwenImage21Cache → Ciru Image Accelerator → KSampler; start with 30 Euler/simple steps, CFG 1, 12 full evaluations. Packed 2048 attention runs only on Strix Halo (gfx1151)."
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
 dependencies = []

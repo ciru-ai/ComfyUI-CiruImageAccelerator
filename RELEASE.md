@@ -4,14 +4,14 @@ The intended distribution is a standalone GitHub repository plus the Comfy Regis
 
 ## Current candidate
 
-- Version: `0.1.1`.
+- Version: `0.1.2`.
 - GitHub target: `ciru-ai/ComfyUI-CiruImageAccelerator`.
 - Validated source: see `VALIDATION.md` for the exact Strix Halo stack, two integrated image hashes, and the live ComfyUI GUI test.
 - The package is source-only. It contains two GUI workflow templates, four API examples, example PNGs, notices, an installation checker, and tests.
 
 ## Before publication
 
-1. Confirm the repository name and create the public GitHub repository under `ciru-ai`. Push the committed standalone package, then tag `v0.1.1` and attach the source ZIP.
+1. Confirm the repository name and create the public GitHub repository under `ciru-ai`. Push the committed standalone package, then tag `v0.1.2` and attach the source ZIP.
 2. Sign in at [Comfy Registry](https://registry.comfy.org/), select the Ciru publisher, and confirm that `pyproject.toml` contains its exact immutable ID, `PublisherId = "ciru"`.
 3. Create a Registry publishing API key for that publisher. Keep it out of source control and logs. With the repository checked out and the official Comfy CLI installed, run `comfy node publish`, or configure the [official publish action](https://docs.comfy.org/registry/publishing) with the `REGISTRY_ACCESS_TOKEN` repository secret.
 4. Verify the public Registry entry, ComfyUI-Manager installation, and one of the included GUI workflows from a clean checkout. Update `VALIDATION.md` with that clean public-install result.

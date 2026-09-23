@@ -1,6 +1,6 @@
 # Release validation
 
-## v0.1.1: long-prompt Strix attention
+## v0.1.1–v0.1.2: long-prompt Strix attention
 
 Qwen Image 2.1's image queries can attend to additional text keys and values. Three prompt-rewritten 2048-square scenes exercised this case on Radeon 8060S / gfx1151 with the official INT8 ConvRot denoiser and encoder, BF16 VAE, Euler/simple, CFG 1, and 30 sampler steps. The fixed node recorded 384 packed attention calls for 12 full evaluations and 960 for 30 full evaluations; each run also recorded 32 native calls for the separate masked text attention. Timings include encoding, denoising, and VAE decoding, but exclude model loading and prompt rewriting.
 

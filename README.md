@@ -1,6 +1,6 @@
 # Ciru Image Accelerator for ComfyUI
 
-A single `MODEL` → `MODEL` node for Qwen Image 2.1 text-to-image. It combines adjustable denoiser prediction with a shape-guarded attention path for AMD Strix Halo (gfx1151). The default is **12 full evaluations within 30 sampler steps**, our preferred balance of speed and image quality. The other 18 steps still run, using predicted denoiser outputs.
+A single `MODEL` → `MODEL` node for Qwen Image 2.1 text-to-image. Connect **UNETLoader → QwenImage21Cache → Ciru Image Accelerator → KSampler**, then start with **30 Euler/simple steps, CFG 1, 12 full evaluations, and auto attention**. Prediction can run on other hardware. The packed 2048 attention path is enabled only on AMD Strix Halo (gfx1151); the package's GPU check routes other hardware through its existing attention implementation. The other 18 sampler steps still run, using predicted denoiser outputs.
 
 The node contains no model weights. It uses the Qwen Image 2.1 model, text encoder and VAE already installed in ComfyUI.
 
