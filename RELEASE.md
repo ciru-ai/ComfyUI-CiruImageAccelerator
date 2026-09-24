@@ -1,21 +1,18 @@
-# Publishing this custom node
+# Releasing this custom node
 
-The intended distribution is a standalone GitHub repository plus the Comfy Registry, which makes the node installable through ComfyUI-Manager. A Hugging Face repository is optional for examples and benchmark images; it is not needed to install the code. The Qwen model weights remain in the official model repository.
+The package is published at [GitHub](https://github.com/ciru-ai/ComfyUI-CiruImageAccelerator) and [Comfy Registry](https://registry.comfy.org/publishers/ciru/nodes/ciru-image-accelerator). ComfyUI-Manager can install the Registry package. Model weights remain in the official Qwen repositories and are not bundled here.
 
-## Current candidate
+## Current release
 
-- Version: `0.1.3`.
-- GitHub target: `ciru-ai/ComfyUI-CiruImageAccelerator`.
-- Validated source: see `VALIDATION.md` for the exact Strix Halo stack, two integrated image hashes, and the live ComfyUI GUI test.
-- The package is source-only. It contains two GUI workflow templates, four API examples, example PNGs, notices, an installation checker, and tests.
+- Version: `0.2.0` ([GitHub release](https://github.com/ciru-ai/ComfyUI-CiruImageAccelerator/releases/tag/v0.2.0)).
+- Qwen Image 2.1 text-to-image and reference-image editing are supported. For edits, use `full_evaluations` equal to sampler steps. Prediction on edits requires the experimental `allow_edit_prediction` opt-in.
+- The source package includes GUI workflow templates, API examples, an installation checker, tests, and the validation record in `VALIDATION.md`.
 
-## Before publication
+## Next release
 
-1. Confirm the repository name and create the public GitHub repository under `ciru-ai`. Push the committed standalone package, then tag `v0.1.3` and attach the source ZIP.
-2. Sign in at [Comfy Registry](https://registry.comfy.org/), select the Ciru publisher, and confirm that `pyproject.toml` contains its exact immutable ID, `PublisherId = "ciru"`.
-3. Create a Registry publishing API key for that publisher. Keep it out of source control and logs. With the repository checked out and the official Comfy CLI installed, run `comfy node publish`, or configure the [official publish action](https://docs.comfy.org/registry/publishing) with the `REGISTRY_ACCESS_TOKEN` repository secret.
-4. Verify the public Registry entry, ComfyUI-Manager installation, and one of the included GUI workflows from a clean checkout. Update `VALIDATION.md` with that clean public-install result.
+1. Update `[project].version`, `CHANGELOG.md`, and `VALIDATION.md`. Test the exact source to be tagged.
+2. Commit and push the source, tag the version, and attach a source ZIP to the GitHub release.
+3. From the repository root, publish with the official Comfy CLI: `comfy node publish --changelog-file release-notes.md`. Supply the Ciru publisher PAT through the CLI prompt or `--token`; never commit or log it.
+4. Check that the Registry version is active and visible publicly, then verify installation and an example workflow from the published package.
 
-The Registry packages Git-tracked files and applies `.comfyignore`, so commit the release files and keep development artifacts out of the archive. Never commit the Registry key.
-
-For subsequent releases, bump `[project].version` using semantic versioning and test the exact source being tagged. The default 12-full schedule, supported attention shapes, model filenames, and model license should be reviewed when upstream ComfyUI or Qwen packaging changes.
+The Registry packages Git-tracked files and applies `.comfyignore`. Review the default 12-full schedule, supported attention shapes, model filenames, and model license whenever upstream ComfyUI or Qwen packaging changes.
