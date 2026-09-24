@@ -4,9 +4,9 @@ The package is published at [GitHub](https://github.com/ciru-ai/ComfyUI-CiruImag
 
 ## Current release
 
-- Version: `0.2.0` ([GitHub release](https://github.com/ciru-ai/ComfyUI-CiruImageAccelerator/releases/tag/v0.2.0)).
+- Version: `0.2.1` ([GitHub release](https://github.com/ciru-ai/ComfyUI-CiruImageAccelerator/releases/tag/v0.2.1)).
 - Qwen Image 2.1 text-to-image and reference-image editing are supported. For edits, use `full_evaluations` equal to sampler steps. Prediction on edits requires the experimental `allow_edit_prediction` opt-in.
-- The source package includes GUI workflow templates, API examples, an installation checker, tests, and the validation record in `VALIDATION.md`.
+- The source package includes a 1024 image-edit GUI template, text-to-image templates, API examples, an installation checker, tests, and the validation record in `VALIDATION.md`.
 
 ## Next release
 

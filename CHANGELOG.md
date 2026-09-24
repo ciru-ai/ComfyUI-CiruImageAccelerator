@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1
+
+- Add a visible 1024 image-edit GUI template with Load Image wired into Qwen's reference conditioning, VAE, and latent canvas.
+- Explain where to find image editing and how to enable the experimental prediction option.
+
 ## 0.2.0
 
 - Support reference-image editing when `full_evaluations` equals sampler steps, retaining the 2048 Strix packed-attention path.

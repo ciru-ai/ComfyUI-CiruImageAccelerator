@@ -1,0 +1,763 @@
+{
+  "id": "ciru-qwen21-1024-image-edit-full",
+  "revision": 0,
+  "last_node_id": 474,
+  "last_link_id": 683,
+  "nodes": [
+    {
+      "id": 451,
+      "type": "UNETLoader",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        510,
+        90
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "unet_name",
+          "name": "unet_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "unet_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "MODEL",
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            676
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader",
+        "models": [
+          {
+            "name": "qwen_image_2.1_int8_convrot.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/diffusion_models/qwen_image_2.1_int8_convrot.safetensors",
+            "directory": "diffusion_models"
+          }
+        ]
+      },
+      "widgets_values": [
+        "qwen_image_2.1_int8_convrot.safetensors",
+        "default"
+      ],
+      "widgets_values_named": {
+        "unet_name": "qwen_image_2.1_int8_convrot.safetensors",
+        "weight_dtype": "default"
+      }
+    },
+    {
+      "id": 452,
+      "type": "TextEncodeQwenImage21",
+      "pos": [
+        440,
+        460
+      ],
+      "size": [
+        530,
+        680
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip",
+          "name": "clip",
+          "type": "CLIP",
+          "link": 647
+        },
+        {
+          "localized_name": "image_1",
+          "name": "images.image_1",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 681
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 682
+        },
+        {
+          "localized_name": "prompt",
+          "name": "prompt",
+          "type": "STRING",
+          "widget": {
+            "name": "prompt"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "negative_prompt",
+          "name": "negative_prompt",
+          "type": "STRING",
+          "widget": {
+            "name": "negative_prompt"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "positive",
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            653
+          ]
+        },
+        {
+          "localized_name": "negative",
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [
+            655
+          ]
+        },
+        {
+          "localized_name": "latent",
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            683
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TextEncodeQwenImage21"
+      },
+      "widgets_values": [
+        "Edit <image1>: change the background to a richly detailed moonlit fantasy garden. Keep the original subject, pose, clothing, facial features, and overall composition.",
+        "",
+        1024
+      ],
+      "widgets_values_named": {
+        "prompt": "Edit <image1>: change the background to a richly detailed moonlit fantasy garden. Keep the original subject, pose, clothing, facial features, and overall composition.",
+        "negative_prompt": "",
+        "resolution": 1024
+      }
+    },
+    {
+      "id": 453,
+      "type": "CLIPLoader",
+      "pos": [
+        0,
+        440
+      ],
+      "size": [
+        510,
+        120
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "clip_name",
+          "name": "clip_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "clip_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "CLIP",
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            647
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader",
+        "models": [
+          {
+            "name": "qwen3vl_8b_int8_convrot.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors",
+            "directory": "text_encoders"
+          }
+        ]
+      },
+      "widgets_values": [
+        "qwen3vl_8b_int8_convrot.safetensors",
+        "qwen_image",
+        "default"
+      ],
+      "widgets_values_named": {
+        "clip_name": "qwen3vl_8b_int8_convrot.safetensors",
+        "type": "qwen_image",
+        "device": "default"
+      }
+    },
+    {
+      "id": 454,
+      "type": "VAELoader",
+      "pos": [
+        1130,
+        610
+      ],
+      "size": [
+        510,
+        70
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "vae_name",
+          "name": "vae_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "vae_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "VAE",
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            649,
+            682
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader",
+        "models": [
+          {
+            "name": "qwen_image_2.1_vae_bf16.safetensors",
+            "url": "https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/vae/qwen_image_2.1_vae_bf16.safetensors",
+            "directory": "vae"
+          }
+        ]
+      },
+      "widgets_values": [
+        "qwen_image_2.1_vae_bf16.safetensors"
+      ],
+      "widgets_values_named": {
+        "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+      }
+    },
+    {
+      "id": 457,
+      "type": "VAEDecode",
+      "pos": [
+        1510,
+        590
+      ],
+      "size": [
+        230,
+        60
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "LATENT",
+          "link": 651
+        },
+        {
+          "localized_name": "vae",
+          "name": "vae",
+          "type": "VAE",
+          "link": 649
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            679
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      }
+    },
+    {
+      "id": 458,
+      "type": "KSampler",
+      "pos": [
+        1130,
+        210
+      ],
+      "size": [
+        270,
+        270
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "model",
+          "name": "model",
+          "type": "MODEL",
+          "link": 678
+        },
+        {
+          "localized_name": "positive",
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 653
+        },
+        {
+          "localized_name": "negative",
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 655
+        },
+        {
+          "localized_name": "latent_image",
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 683
+        },
+        {
+          "localized_name": "seed",
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "steps",
+          "name": "steps",
+          "type": "INT",
+          "widget": {
+            "name": "steps"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "cfg",
+          "name": "cfg",
+          "type": "FLOAT",
+          "widget": {
+            "name": "cfg"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sampler_name",
+          "name": "sampler_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "sampler_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "scheduler",
+          "name": "scheduler",
+          "type": "COMBO",
+          "widget": {
+            "name": "scheduler"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "LATENT",
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            651
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        99,
+        "fixed",
+        30,
+        1,
+        "euler",
+        "simple",
+        1
+      ],
+      "widgets_values_named": {
+        "seed": 99,
+        "control_after_generate": "fixed",
+        "steps": 30,
+        "cfg": 1,
+        "sampler_name": "euler",
+        "scheduler": "simple",
+        "denoise": 1
+      }
+    },
+    {
+      "id": 470,
+      "type": "QwenImage21Cache",
+      "pos": [
+        370,
+        0
+      ],
+      "size": [
+        310,
+        130
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 676
+        },
+        {
+          "name": "device",
+          "type": "COMBO",
+          "widget": {
+            "name": "device"
+          },
+          "link": null
+        },
+        {
+          "name": "dtype",
+          "type": "COMBO",
+          "widget": {
+            "name": "dtype"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            677
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "QwenImage21Cache"
+      },
+      "widgets_values": [
+        "gpu",
+        "default"
+      ]
+    },
+    {
+      "id": 471,
+      "type": "CiruTurboPrediction",
+      "pos": [
+        750,
+        50
+      ],
+      "size": [
+        340,
+        200
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 677
+        },
+        {
+          "name": "enabled",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "enabled"
+          },
+          "link": null
+        },
+        {
+          "name": "full_evaluations",
+          "type": "INT",
+          "widget": {
+            "name": "full_evaluations"
+          },
+          "link": null
+        },
+        {
+          "name": "attention",
+          "type": "COMBO",
+          "widget": {
+            "name": "attention"
+          },
+          "link": null
+        },
+        {
+          "name": "allow_edit_prediction",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "allow_edit_prediction"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            678
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CiruTurboPrediction"
+      },
+      "widgets_values": [
+        true,
+        30,
+        "auto",
+        false
+      ]
+    },
+    {
+      "id": 472,
+      "type": "SaveImage",
+      "pos": [
+        1840,
+        590
+      ],
+      "size": [
+        320,
+        90
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 679
+        },
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "Ciru_1024_default"
+      ]
+    },
+    {
+      "id": 473,
+      "type": "LoadImage",
+      "pos": [
+        80,
+        650
+      ],
+      "size": [
+        290,
+        110
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            681
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "elephant-1024-full.png",
+        "image"
+      ],
+      "widgets_values_named": {
+        "image": "elephant-1024-full.png",
+        "upload": "image"
+      }
+    },
+    {
+      "id": 474,
+      "type": "MarkdownNote",
+      "pos": [
+        80,
+        50
+      ],
+      "size": [
+        330,
+        420
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "Image edit: start here",
+      "properties": {},
+      "widgets_values": [
+        "1. In Load Image, choose the picture you want to edit. The bundled assets/elephant-1024-full.png is an optional example; upload it first if you want to use that example.\n\n2. Write an edit instruction in TextEncodeQwenImage21, referring to the source as <image1>.\n\n3. Queue the workflow. Qwen Image 2.1 supplies reference conditioning and the latent canvas; Ciru accelerates the MODEL connection.\n\nStart with 30 sampler steps and 30 full evaluations for a full edit. To try faster experimental edits, enable allow_edit_prediction and lower full_evaluations (12/30 was tested). At 1024, auto keeps native attention."
+      ],
+      "widgets_values_named": {
+        "markdown": "1. In Load Image, choose the picture you want to edit. The bundled assets/elephant-1024-full.png is an optional example; upload it first if you want to use that example.\n\n2. Write an edit instruction in TextEncodeQwenImage21, referring to the source as <image1>.\n\n3. Queue the workflow. Qwen Image 2.1 supplies reference conditioning and the latent canvas; Ciru accelerates the MODEL connection.\n\nStart with 30 sampler steps and 30 full evaluations for a full edit. To try faster experimental edits, enable allow_edit_prediction and lower full_evaluations (12/30 was tested). At 1024, auto keeps native attention."
+      }
+    }
+  ],
+  "links": [
+    [
+      647,
+      453,
+      0,
+      452,
+      0,
+      "CLIP"
+    ],
+    [
+      649,
+      454,
+      0,
+      457,
+      1,
+      "VAE"
+    ],
+    [
+      651,
+      458,
+      0,
+      457,
+      0,
+      "LATENT"
+    ],
+    [
+      653,
+      452,
+      0,
+      458,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      655,
+      452,
+      1,
+      458,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      676,
+      451,
+      0,
+      470,
+      0,
+      "MODEL"
+    ],
+    [
+      677,
+      470,
+      0,
+      471,
+      0,
+      "MODEL"
+    ],
+    [
+      678,
+      471,
+      0,
+      458,
+      0,
+      "MODEL"
+    ],
+    [
+      679,
+      457,
+      0,
+      472,
+      0,
+      "IMAGE"
+    ],
+    [
+      681,
+      473,
+      0,
+      452,
+      1,
+      "IMAGE"
+    ],
+    [
+      682,
+      454,
+      0,
+      452,
+      2,
+      "VAE"
+    ],
+    [
+      683,
+      452,
+      2,
+      458,
+      3,
+      "LATENT"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.7,
+      "offset": [
+        0,
+        0
+      ]
+    }
+  },
+  "version": 0.4
+}

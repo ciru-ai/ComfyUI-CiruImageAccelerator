@@ -1,5 +1,9 @@
 # Release validation
 
+## Image-edit GUI template (0.2.1)
+
+The new 1024 edit template has a structurally checked ComfyUI graph: `LoadImage` feeds `TextEncodeQwenImage21` as `images.image_1`, `VAELoader` feeds its `vae` input, its latent output feeds `KSampler`, and `QwenImage21Cache → CiruTurboPrediction → KSampler` remains the model path. The template sets 30 sampler steps, 30 full evaluations, and edit prediction off. This is a packaging and discoverability update; the runtime edit results below were produced with the same node code in 0.2.0. A fresh GUI run of this exact template has not been claimed.
+
 ## Full-evaluation image editing
 
 The packaged node completed a one-reference Qwen Image 2.1 edit on the Radeon 8060S with the official INT8 ConvRot denoiser and encoder, BF16 VAE, Euler/simple, CFG 1, and no predicted steps. The 1024-square edit ran 30/30 full evaluations in 317.51 s (102.22 s reference encoding, 209.00 s denoising, 6.30 s decoding). The node reported 30 full and zero predicted calls. Its output changed the requested sky and retained the scene layout, but also increased contrast and texture beyond the requested region. This is a source-fidelity limitation of the observed edit result, not a claim of quality improvement.

@@ -1,6 +1,6 @@
 [project]
 name = "ciru-image-accelerator"
-version = "0.2.0"
+version = "0.2.1"
 description = "Qwen Image 2.1: Turbo Prediction and Strix Halo packed attention for text-to-image and image editing. Start edits with full evaluations; edit prediction is opt-in."
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
