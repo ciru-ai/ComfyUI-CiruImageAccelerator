@@ -19,16 +19,19 @@ class CiruTurboPrediction:
             "full_evaluations": ("INT", {"default": DEFAULT_FULL_EVALUATIONS,
                                          "min": MIN_FULL_EVALUATIONS, "max": 10000, "step": 1}),
             "attention": (["auto", "native", "strix"], {"default": "auto"}),
+        }, "optional": {
+            "allow_edit_prediction": ("BOOLEAN", {"default": False}),
         }}
 
     RETURN_TYPES = ("MODEL",)
     FUNCTION = "apply"
     CATEGORY = "Ciru/Image Acceleration"
     DESCRIPTION = ("Qwen Image 2.1 only. Twelve full denoiser evaluations by default. "
+                   "For image editing, set full evaluations equal to sampler steps, or opt in to experimental edit prediction. "
                    "Auto keeps native attention at 1024 and uses the gfx1151 path at 2048 square.")
 
     def apply(self, model, enabled=True, full_evaluations=DEFAULT_FULL_EVALUATIONS,
-              attention="auto"):
+              attention="auto", allow_edit_prediction=False):
         if not enabled:
             return (model,)
         if attention not in ("auto", "native", "strix"):
@@ -66,8 +69,11 @@ class CiruTurboPrediction:
             branch_id = options.get("cond_or_uncond")
             branch = tuple(branch_id) if branch_id is not None else ("single",)
             refs = args[3] if len(args) > 3 else kwargs.get("ref_latents")
-            if refs:
-                raise RuntimeError("Turbo Prediction has not been qualified for image editing")
+            if refs and full_evaluations != state.steps and not allow_edit_prediction:
+                raise RuntimeError(
+                    "Image editing currently requires full_evaluations equal to sampler steps; "
+                    "enable allow_edit_prediction to try experimental predicted edits"
+                )
             return state.evaluate(lambda: executor(*args, **kwargs), args[0], branch)
 
         patched.add_wrapper_with_key(comfy.patcher_extension.WrappersMP.OUTER_SAMPLE,

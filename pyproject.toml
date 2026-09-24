@@ -1,7 +1,7 @@
 [project]
 name = "ciru-image-accelerator"
-version = "0.1.3"
-description = "Qwen Image 2.1: connect QwenImage21Cache → Ciru AMD Halo Qwen 2.1 Turbo → KSampler; start with 30 Euler/simple steps, CFG 1, 12 full evaluations. Packed 2048 attention runs only on Strix Halo (gfx1151)."
+version = "0.2.0"
+description = "Qwen Image 2.1: Turbo Prediction and Strix Halo packed attention for text-to-image and image editing. Start edits with full evaluations; edit prediction is opt-in."
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
 dependencies = []

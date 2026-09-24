@@ -53,15 +53,16 @@ class FakeModel:
 
 
 class LifecycleTests(unittest.TestCase):
-    def wrappers(self, full=12, attention="native"):
-        model = package.CiruTurboPrediction().apply(FakeModel(), True, full, attention)[0]
+    def wrappers(self, full=12, attention="native", allow_edit_prediction=False):
+        model = package.CiruTurboPrediction().apply(
+            FakeModel(), True, full, attention, allow_edit_prediction)[0]
         keys = comfy.patcher_extension.WrappersMP
         outer = model.get_wrappers(keys.OUTER_SAMPLE, "ciru_turbo_prediction")[0]
         diffusion = model.get_wrappers(keys.DIFFUSION_MODEL, "ciru_turbo_prediction")[0]
         return outer, diffusion
 
     @staticmethod
-    def execute_sample(outer, diffusion, interrupt_at=None):
+    def execute_sample(outer, diffusion, interrupt_at=None, refs=None):
         calls = []
 
         def full_model(x, *_args):
@@ -73,7 +74,7 @@ class LifecycleTests(unittest.TestCase):
                 if index == interrupt_at:
                     raise RuntimeError("cancelled")
                 x = torch.zeros((1, 2))
-                diffusion(full_model, x, None, None, None, None, {"cond_or_uncond": [0]})
+                diffusion(full_model, x, None, None, refs, None, {"cond_or_uncond": [0]})
 
         outer(sample, None, None, None, list(range(31)))
         return len(calls)
@@ -88,6 +89,19 @@ class LifecycleTests(unittest.TestCase):
     def test_full_count_uses_no_prediction(self):
         outer, diffusion = self.wrappers(full=30)
         self.assertEqual(self.execute_sample(outer, diffusion), 30)
+
+    def test_edit_runs_with_full_evaluations(self):
+        outer, diffusion = self.wrappers(full=30)
+        self.assertEqual(self.execute_sample(outer, diffusion, refs={"image_1": object()}), 30)
+
+    def test_edit_rejects_predicted_steps(self):
+        outer, diffusion = self.wrappers(full=12)
+        with self.assertRaisesRegex(RuntimeError, "Image editing currently requires"):
+            self.execute_sample(outer, diffusion, refs={"image_1": object()})
+
+    def test_edit_prediction_requires_explicit_opt_in(self):
+        outer, diffusion = self.wrappers(full=12, allow_edit_prediction=True)
+        self.assertEqual(self.execute_sample(outer, diffusion, refs={"image_1": object()}), 12)
 
     def test_disabled_and_existing_attention_are_preserved(self):
         model = FakeModel()
